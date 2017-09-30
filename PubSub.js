@@ -3,7 +3,7 @@
  */
 class PubSub {
   constructor() {
-    this.eventList = {}
+    this.events = {}
   }
 
   /**
@@ -11,12 +11,12 @@ class PubSub {
    * @param {*} key 事件名
    * @param {*} cb 回调函数
    */
-  on(key, cb) {
-    if (!this.eventList[key]) {
-      this.eventList[key] = [];
-      this.eventList[key].push(cb)
+  add(key, cb) {
+    if (!this.events[key]) {
+      this.events[key] = [];
+      this.events[key].push(cb)
     } else {
-      this.eventList[key].push(cb)
+      this.events[key].push(cb)
     }
   }
 
@@ -26,7 +26,7 @@ class PubSub {
    */
   emit(key) {
     let args = Array.from(arguments),
-      cbList = this.eventList[key]
+      cbList = this.events[key]
     for (let cb in cbList) {
       cbList[cb].apply(this, args.slice(1))
     }
@@ -37,7 +37,7 @@ class PubSub {
    * @param {*} key 事件名 
    */
   remove(key) {
-    let cbList = this.eventList[key],
+    let cbList = this.events[key],
       removeList = Array.from(arguments).slice(1)
     if (!cbList) return false
     if (!removeList) {
@@ -57,12 +57,12 @@ class PubSub {
    */
   once(key) {
     this.emit(key)
-    this.eventList[key] = []
+    this.events[key] = []
   }
 }
 
 let event = new PubSub()
-event.on('hello', word => {
+event.add('hello', word => {
   console.log('hello ' + word)
 })
 
